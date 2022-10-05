@@ -28,9 +28,9 @@ int main(int argc, char* argv[]){
         messages.push_back(argv[i]);
     
     // make sure the vector is correct
-    cout << "Output of begin and end: ";
-    for (auto i = messages.begin(); i != messages.end(); ++i)
-        cout << *i << " ";
+    std::cout << "Messages entered: " << std::endl;
+    for (std::string i : messages)
+        std::cout << i << std::endl;
     
     // updating string to find app name
     std::string appName(argv[0]);

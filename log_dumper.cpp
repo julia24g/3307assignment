@@ -10,8 +10,7 @@ using namespace std;
 
 int main(int argc, char* argv[]){
     // updating string to find app name
-    std::string appName(argv[0]);
-    appName.erase(0, 2);
+    std::string appName(argv[1]);
     
     // make Logger object
     Logger logger2(appName);
@@ -20,11 +19,12 @@ int main(int argc, char* argv[]){
     std::vector<Log_Message> entireLog = logger2.read_all();
 
     // read through vector and print
-    cout << "Output of log: ";
+    std::cout << "All Messages from Log:" << std::endl;
     for(Log_Message oneMessage : entireLog) {
         std::string a = oneMessage.get_timestamp();
+        a.erase(remove(a.begin(), a.end(), '\n'));
         std::string b = oneMessage.get_message();
-        cout << a << ": " << b << endl;
+        std::cout << a << ": " << b << std::endl;
     }
     return 0;
 }
