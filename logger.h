@@ -9,6 +9,7 @@
 #define logger_h
 
 #include <ctime>
+#include <unistd.h>
 #include <sqlite3.h> 
 #include <sstream>
 #include "log_message.h"

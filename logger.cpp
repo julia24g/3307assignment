@@ -1,6 +1,6 @@
 //
 //  log_message.cpp
-//  
+//  File Contents: includes Logger class functions that create a table, write to a table, and read a table
 //
 //  Created by Julia Groza on 2022-10-01.
 //
@@ -8,20 +8,23 @@
 #include "logger.h"
 using namespace std;
 
+// Function Name: Logger
+// Description: constructor that creates a connection to the database and creates a table based off of input
+// Parameter Descriptions: string of pointer to name
+// Return Descriptions: none
 Logger::Logger(std::string &name){
     // storing app name in Logger object
     this->appName = name;
     // preparing for use in open function
     // const char * aa = name.c_str();
     
-
     /** OPENING A TABLE*/
     
     // setting up open function & create table function
     char* zErrMsg;
     int handle = 0;
 
-    std::string db_file_name = this->appName + "-db";
+    std::string db_file_name = "dbFile";
     
     // open function
     handle = sqlite3_open(db_file_name.c_str(), &dbPointer); // returns db connection
@@ -51,6 +54,10 @@ Logger::Logger(std::string &name){
     else std::cout << "Table Created Successfully" << std::endl; // got the OK
 }
 
+// Function Name: write()
+// Description: writes to the table based off user input
+// Parameter Descriptions: string of the message
+// Return Descriptions: none
 void Logger::write(std::string &message){
     // setting up parameters
     char* zErrMsg;
@@ -67,18 +74,22 @@ void Logger::write(std::string &message){
     std::string sql = "INSERT INTO " + aName + " VALUES (\"" + goodtime + "\", \"" + m + "\");";
     
     handle = sqlite3_exec(dbPointer, sql.c_str(), NULL, 0, &zErrMsg);
-    if (handle != SQLITE_OK) { // not ok - records not inserted
+    if (handle != SQLITE_OK) {
             std::cerr << "Error Insert" << std::endl;
             sqlite3_free(zErrMsg);
         }
-    else std::cout << "Records Created Successfully!" << std::endl; // received ok, so records created
+    else std::cout << "Records Created Successfully!" << std::endl;
 }
 
-std::vector<Log_Message> Logger::read_all(){ // want this to print
+// Function Name: read_all
+// Description: reads all messages from the app and stores them in a vector in the form of Log_Messages
+// Parameter Descriptions: none
+// Return Descriptions: returs a vector of Log_Messages
+std::vector<Log_Message> Logger::read_all(){ 
     // creating vector
     std::vector<Log_Message> allMessages;
 
-    // create SQL statemebt
+    // create SQL statement
     ostringstream os_sql;
     os_sql << "SELECT * FROM " << this->appName << ";";
     std::string sql = os_sql.str();
@@ -95,7 +106,7 @@ std::vector<Log_Message> Logger::read_all(){ // want this to print
         }
     else std::cout << "Records Selected Successfully!" << std::endl; // received ok, so records created
     
-    // step 2: step statement
+    // step 2 and 3: step statement and column statement for reading data
     int stepPointer = sqlite3_step(stmt);
 
     // check return value on stepPointer - loop through if there are still rows left
@@ -112,7 +123,10 @@ std::vector<Log_Message> Logger::read_all(){ // want this to print
     return allMessages;
 }
 
-// destructor
+// Function Name: ~Logger
+// Description: destructor
+// Parameter Descriptions: none
+// Return Descriptions: none
 Logger::~Logger(){
     sqlite3_close(dbPointer); // closing the database connection
     
